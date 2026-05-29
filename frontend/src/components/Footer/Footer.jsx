@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { Zap, Twitter, Instagram, Linkedin, Youtube, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { subscribeNewsletter } from '../../utils/api';
@@ -29,10 +30,10 @@ const links = {
     { label: 'Affiliate Program', href: '#contact' },
   ],
   Legal: [
-    { label: 'Privacy Policy', href: '#' },
-    { label: 'Terms of Service', href: '#' },
-    { label: 'Cookie Policy', href: '#' },
-    { label: 'Disclaimer', href: '#' },
+    { label: 'Privacy Policy', href: '/privacy-policy' },
+    { label: 'Terms of Service', href: '/terms' },
+    { label: 'Refund Policy', href: '/refund-policy' },
+    { label: 'Shipping Policy', href: '/shipping-policy' },
   ],
 };
 
@@ -141,6 +142,10 @@ export default function Footer() {
                         >
                           {item.label}
                         </button>
+                      ) : item.href.startsWith('/') ? (
+                        <Link to={item.href} className="text-sm text-gray-600 hover:text-gray-300 transition-colors">
+                          {item.label}
+                        </Link>
                       ) : (
                         <a
                           href={item.href}
@@ -165,9 +170,10 @@ export default function Footer() {
             © 2025 AI Career Accelerator. All rights reserved. Made with ❤️ for curious minds.
           </p>
           <div className="flex items-center gap-4 text-xs text-gray-700">
-            <span className="hover:text-gray-500 transition-colors cursor-default">Privacy</span>
-            <span className="hover:text-gray-500 transition-colors cursor-default">Terms</span>
-            <span className="hover:text-gray-500 transition-colors cursor-default">Cookies</span>
+            <Link to="/privacy-policy" className="hover:text-gray-400 transition-colors">Privacy</Link>
+            <Link to="/terms" className="hover:text-gray-400 transition-colors">Terms</Link>
+            <Link to="/refund-policy" className="hover:text-gray-400 transition-colors">Refunds</Link>
+            <Link to="/shipping-policy" className="hover:text-gray-400 transition-colors">Shipping</Link>
           </div>
         </div>
       </div>

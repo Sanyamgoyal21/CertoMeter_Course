@@ -129,6 +129,14 @@
   }
 }
 
+/* Policy page prose */
+.prose-policy p { @apply text-gray-400 leading-relaxed text-sm mb-3; }
+.prose-policy a { @apply text-accent-orange hover:text-accent-orange-light underline transition-colors; }
+.prose-policy strong { @apply text-white font-semibold; }
+.prose-policy table { @apply w-full text-sm border-collapse; }
+.prose-policy th { @apply text-left text-gray-300 font-semibold p-3 border-b border-white/10; }
+.prose-policy td { @apply text-gray-400 p-3 border-b border-white/5; }
+
 /* Marquee animation */
 @keyframes marquee {
   0% { transform: translateX(0%); }
