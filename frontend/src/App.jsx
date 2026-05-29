@@ -1,10 +1,20 @@
 import { useEffect, Suspense, lazy } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import { SocketProvider } from './context/SocketContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero/Hero';
 import CursorEffect from './components/ui/CursorEffect';
 import StickyCTA from './components/ui/StickyCTA';
 import { trackVisitor } from './utils/api';
+
+function getOrCreateSessionId() {
+  let id = sessionStorage.getItem('session_id');
+  if (!id) {
+    id = uuidv4();
+    sessionStorage.setItem('session_id', id);
+  }
+  return id;
+}
 
 const About = lazy(() => import('./components/About/About'));
 const AITools = lazy(() => import('./components/AITools/AITools'));
@@ -27,10 +37,8 @@ function SectionLoader() {
 
 function AppContent() {
   useEffect(() => {
-    const sessionId = sessionStorage.getItem('session_id');
-    if (sessionId) {
-      trackVisitor(sessionId).catch(() => {});
-    }
+    const sessionId = getOrCreateSessionId();
+    trackVisitor(sessionId).catch(() => {});
   }, []);
 
   return (
