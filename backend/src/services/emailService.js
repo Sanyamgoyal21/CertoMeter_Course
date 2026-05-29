@@ -1,14 +1,20 @@
-const { Resend } = require('resend');
 const nodemailer = require('nodemailer');
 const validator = require('validator');
 
-function getResendApiKey() {
-  return process.env.RESEND_API_KEY || process.env.RESEND_APT_KEY;
+function getFrontendUrl() {
+  return (process.env.PUBLIC_SITE_URL || process.env.FRONTEND_URL || 'http://localhost:5173').replace(/\/$/, '');
 }
 
-// Use Resend if API key is set, otherwise fall back to nodemailer/Gmail.
-function useResend() {
-  return !!getResendApiKey();
+function getEmailConfigStatus() {
+  const notificationEmail = process.env.EMAIL_TO || process.env.EMAIL_USER || '';
+  const from = process.env.EMAIL_FROM || `"AI Career Accelerator" <${process.env.EMAIL_USER || ''}>`;
+
+  return {
+    provider: 'smtp',
+    hasSmtpAuth: !!(process.env.EMAIL_USER && process.env.EMAIL_PASS),
+    from,
+    notificationEmailConfigured: validator.isEmail(notificationEmail),
+  };
 }
 
 let transporter = null;
@@ -25,33 +31,22 @@ function getTransporter() {
 }
 
 async function sendEmail({ to, subject, html }) {
-  if (useResend()) {
-    const resend = new Resend(getResendApiKey());
-    const { error } = await resend.emails.send({
-      from: process.env.EMAIL_FROM || 'AI Career Accelerator <onboarding@resend.dev>',
-      to,
-      subject,
-      html,
-    });
-
-    if (error) {
-      const message = error.message || JSON.stringify(error);
-      throw new Error(`Resend email failed: ${message}`);
-    }
-  } else {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      throw new Error('Email is not configured. Set RESEND_API_KEY or EMAIL_USER/EMAIL_PASS.');
-    }
-
-    const t = getTransporter();
-    await t.sendMail({
-      from: `"AI Career Accelerator" <${process.env.EMAIL_USER}>`,
-      to, subject, html,
-    });
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    throw new Error('Email is not configured. Set EMAIL_USER and EMAIL_PASS.');
   }
+
+  const t = getTransporter();
+  await t.sendMail({
+    from: process.env.EMAIL_FROM || `"AI Career Accelerator" <${process.env.EMAIL_USER}>`,
+    to,
+    subject,
+    html,
+  });
 }
 
 async function sendWelcomeEmail(email) {
+  const frontendUrl = getFrontendUrl();
+
   await sendEmail({
     to: email,
     subject: '🎁 Welcome! Your free AI toolkit is inside',
@@ -97,7 +92,7 @@ async function sendWelcomeEmail(email) {
 
           <!-- CTA -->
           <div style="text-align:center;margin-bottom:32px;">
-            <a href="http://localhost:5173/#pricing"
+            <a href="${frontendUrl}/#pricing"
                style="display:inline-block;background:linear-gradient(135deg,#ff6b35,#ec4899);color:white;text-decoration:none;font-weight:700;font-size:16px;padding:16px 40px;border-radius:50px;box-shadow:0 0 30px rgba(255,107,53,0.3);">
               🚀 Enroll Now — ₹5,999
             </a>
@@ -153,6 +148,8 @@ async function sendLeadNotification(lead) {
 }
 
 async function sendContactConfirmation(lead) {
+  const frontendUrl = getFrontendUrl();
+
   await sendEmail({
     to: lead.email,
     subject: `Hi ${lead.name.split(' ')[0]}! We got your message 👋`,
@@ -180,7 +177,7 @@ async function sendContactConfirmation(lead) {
               <p style="color:#9ca3af;font-size:14px;margin:0;">The AI Career Accelerator is available at <strong style="color:white;">₹5,999</strong> (60% off). Enroll before the price goes up!</p>
             </div>
             <div style="text-align:center;">
-              <a href="http://localhost:5173/#pricing" style="display:inline-block;background:linear-gradient(135deg,#ff6b35,#ec4899);color:white;text-decoration:none;font-weight:700;padding:14px 36px;border-radius:50px;">
+              <a href="${frontendUrl}/#pricing" style="display:inline-block;background:linear-gradient(135deg,#ff6b35,#ec4899);color:white;text-decoration:none;font-weight:700;padding:14px 36px;border-radius:50px;">
                 Enroll Now →
               </a>
             </div>
@@ -193,4 +190,24 @@ async function sendContactConfirmation(lead) {
   });
 }
 
-module.exports = { sendWelcomeEmail, sendLeadNotification, sendContactConfirmation };
+async function sendTestEmail(to) {
+  await sendEmail({
+    to,
+    subject: 'CertoMeter email test',
+    html: `
+      <div style="font-family:Arial,sans-serif;padding:20px;">
+        <h2>CertoMeter email test</h2>
+        <p>If you received this, the deployed backend email configuration is working.</p>
+        <p>Sent at ${new Date().toISOString()}</p>
+      </div>
+    `,
+  });
+}
+
+module.exports = {
+  sendWelcomeEmail,
+  sendLeadNotification,
+  sendContactConfirmation,
+  sendTestEmail,
+  getEmailConfigStatus,
+};

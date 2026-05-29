@@ -12,6 +12,7 @@ const { initSocketManager } = require('./src/socket/socketManager');
 const analyticsRoutes = require('./src/routes/analytics');
 const leadsRoutes = require('./src/routes/leads');
 const newsletterRoutes = require('./src/routes/newsletter');
+const emailRoutes = require('./src/routes/email');
 const rateLimiter = require('./src/middleware/rateLimiter');
 
 const app = express();
@@ -52,6 +53,7 @@ app.get('/health', (req, res) => {
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/leads', leadsRoutes);
 app.use('/api/newsletter', newsletterRoutes);
+app.use('/api/email', emailRoutes);
 
 // 404 handler
 app.use((req, res) => {

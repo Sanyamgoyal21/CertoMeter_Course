@@ -80,14 +80,14 @@ MONGODB_URI=mongodb://localhost:27017/ai-career-accelerator
 REDIS_HOST=localhost
 REDIS_PORT=6379
 FRONTEND_URL=http://localhost:5173
+PUBLIC_SITE_URL=http://localhost:5173
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USER=your@gmail.com
-EMAIL_PASS=your_app_password
-EMAIL_FROM=noreply@aicareers.com
+EMAIL_PASS=your_google_app_password
+EMAIL_FROM=CertoMeter <your@gmail.com>
 EMAIL_TO=your@gmail.com
-# Optional: preferred over SMTP when set
-RESEND_API_KEY=your_resend_api_key
+EMAIL_TEST_TOKEN=change_me_to_a_long_random_value
 WHATSAPP_NUMBER=+919999999999
 ```
 
