@@ -1,27 +1,43 @@
+const { Resend } = require('resend');
 const nodemailer = require('nodemailer');
 
-let transporter = null;
+// Use Resend if API key is set, otherwise fall back to nodemailer/Gmail
+function useResend() {
+  return !!process.env.RESEND_API_KEY;
+}
 
+let transporter = null;
 function getTransporter() {
   if (transporter) return transporter;
-
   transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.EMAIL_PORT || '587'),
     secure: false,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
+    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
   });
-
   return transporter;
 }
 
+async function sendEmail({ to, subject, html }) {
+  if (useResend()) {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    await resend.emails.send({
+      from: process.env.EMAIL_FROM || 'AI Career Accelerator <onboarding@resend.dev>',
+      to,
+      subject,
+      html,
+    });
+  } else {
+    const t = getTransporter();
+    await t.sendMail({
+      from: `"AI Career Accelerator" <${process.env.EMAIL_USER}>`,
+      to, subject, html,
+    });
+  }
+}
+
 async function sendWelcomeEmail(email) {
-  const t = getTransporter();
-  await t.sendMail({
-    from: `"AI Career Accelerator" <${process.env.EMAIL_USER}>`,
+  await sendEmail({
     to: email,
     subject: '🎁 Welcome! Your free AI toolkit is inside',
     html: `
@@ -98,10 +114,8 @@ async function sendWelcomeEmail(email) {
 }
 
 async function sendLeadNotification(lead) {
-  if (!process.env.EMAIL_USER) return;
-  const t = getTransporter();
-  await t.sendMail({
-    from: `"AI Career Accelerator" <${process.env.EMAIL_USER}>`,
+  if (!process.env.EMAIL_USER && !process.env.RESEND_API_KEY) return;
+  await sendEmail({
     to: process.env.EMAIL_USER,
     subject: `🔔 New Lead: ${lead.name} (${lead.source})`,
     html: `
@@ -121,9 +135,7 @@ async function sendLeadNotification(lead) {
 }
 
 async function sendContactConfirmation(lead) {
-  const t = getTransporter();
-  await t.sendMail({
-    from: `"AI Career Accelerator" <${process.env.EMAIL_USER}>`,
+  await sendEmail({
     to: lead.email,
     subject: `Hi ${lead.name.split(' ')[0]}! We got your message 👋`,
     html: `
