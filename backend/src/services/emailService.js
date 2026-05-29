@@ -1,4 +1,3 @@
-const nodemailer = require('nodemailer');
 const validator = require('validator');
 
 function getFrontendUrl() {
@@ -6,42 +5,58 @@ function getFrontendUrl() {
 }
 
 function getEmailConfigStatus() {
-  const notificationEmail = process.env.EMAIL_TO || process.env.EMAIL_USER || '';
-  const from = process.env.EMAIL_FROM || `"AI Career Accelerator" <${process.env.EMAIL_USER || ''}>`;
+  const notificationEmail = process.env.EMAIL_TO || '';
+  const from = process.env.BREVO_SENDER_EMAIL || '';
 
   return {
-    provider: 'smtp',
-    hasSmtpAuth: !!(process.env.EMAIL_USER && process.env.EMAIL_PASS),
+    provider: 'brevo',
+    hasBrevoApiKey: !!process.env.BREVO_API_KEY,
     from,
     notificationEmailConfigured: validator.isEmail(notificationEmail),
   };
 }
 
-let transporter = null;
-function getTransporter() {
-  if (transporter) return transporter;
-  const port = parseInt(process.env.EMAIL_PORT || '587');
-  transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-    port,
-    secure: port === 465, // true for 465 (SSL), false for 587 (STARTTLS)
-    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-  });
-  return transporter;
+function parseSender() {
+  const senderEmail = process.env.BREVO_SENDER_EMAIL;
+  const senderName = process.env.BREVO_SENDER_NAME || 'AI Career Accelerator';
+
+  if (!senderEmail || !validator.isEmail(senderEmail)) {
+    throw new Error('Email sender is not configured. Set BREVO_SENDER_EMAIL to a verified Brevo sender email.');
+  }
+
+  return { email: senderEmail, name: senderName };
 }
 
 async function sendEmail({ to, subject, html }) {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    throw new Error('Email is not configured. Set EMAIL_USER and EMAIL_PASS.');
+  if (!process.env.BREVO_API_KEY) {
+    throw new Error('Email is not configured. Set BREVO_API_KEY.');
   }
 
-  const t = getTransporter();
-  await t.sendMail({
-    from: process.env.EMAIL_FROM || `"AI Career Accelerator" <${process.env.EMAIL_USER}>`,
-    to,
-    subject,
-    html,
+  console.log(`Sending email via Brevo API to ${to}`);
+  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+      'api-key': process.env.BREVO_API_KEY,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify({
+      sender: parseSender(),
+      to: [{ email: to }],
+      replyTo: parseSender(),
+      subject,
+      htmlContent: html,
+    }),
   });
+
+  const result = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    const message = result.message || JSON.stringify(result) || response.statusText;
+    throw new Error(`Brevo email failed: ${message}`);
+  }
+
+  return result;
 }
 
 async function sendWelcomeEmail(email) {
@@ -124,7 +139,7 @@ async function sendWelcomeEmail(email) {
 }
 
 async function sendLeadNotification(lead) {
-  const notificationEmail = process.env.EMAIL_TO || process.env.EMAIL_USER;
+  const notificationEmail = process.env.EMAIL_TO;
 
   if (!notificationEmail || !validator.isEmail(notificationEmail)) return;
 
