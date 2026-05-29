@@ -26,6 +26,9 @@ const io = new Server(server, {
   transports: ['websocket', 'polling'],
 });
 
+// Trust Render/proxy reverse proxy
+app.set('trust proxy', 1);
+
 // Middleware
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({
