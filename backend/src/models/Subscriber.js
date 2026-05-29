@@ -7,6 +7,4 @@ const subscriberSchema = new mongoose.Schema({
   source: { type: String, default: 'footer' },
 });
 
-subscriberSchema.index({ email: 1 });
-
 module.exports = mongoose.models.Subscriber || mongoose.model('Subscriber', subscriberSchema);
