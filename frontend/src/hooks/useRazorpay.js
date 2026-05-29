@@ -45,6 +45,21 @@ export function useRazorpay() {
         modal: {
           ondismiss: () => toast('Payment cancelled.', { icon: '⚠️' }),
         },
+        config: {
+          display: {
+            blocks: {
+              upi: {
+                name: 'Pay via UPI',
+                instruments: [
+                  { method: 'upi', flows: ['collect', 'intent', 'qr'] },
+                ],
+              },
+              other: { name: 'Other Payment Methods' },
+            },
+            sequence: ['block.upi', 'block.other'],
+            preferences: { show_default_blocks: false },
+          },
+        },
         handler: async (response) => {
           const verifyToast = toast.loading('Verifying payment...');
           try {
