@@ -84,6 +84,10 @@ EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USER=your@gmail.com
 EMAIL_PASS=your_app_password
+EMAIL_FROM=noreply@aicareers.com
+EMAIL_TO=your@gmail.com
+# Optional: preferred over SMTP when set
+RESEND_API_KEY=your_resend_api_key
 WHATSAPP_NUMBER=+919999999999
 ```
 

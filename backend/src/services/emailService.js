@@ -1,9 +1,14 @@
 const { Resend } = require('resend');
 const nodemailer = require('nodemailer');
+const validator = require('validator');
 
-// Use Resend if API key is set, otherwise fall back to nodemailer/Gmail
+function getResendApiKey() {
+  return process.env.RESEND_API_KEY || process.env.RESEND_APT_KEY;
+}
+
+// Use Resend if API key is set, otherwise fall back to nodemailer/Gmail.
 function useResend() {
-  return !!process.env.RESEND_API_KEY;
+  return !!getResendApiKey();
 }
 
 let transporter = null;
@@ -21,14 +26,23 @@ function getTransporter() {
 
 async function sendEmail({ to, subject, html }) {
   if (useResend()) {
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    await resend.emails.send({
+    const resend = new Resend(getResendApiKey());
+    const { error } = await resend.emails.send({
       from: process.env.EMAIL_FROM || 'AI Career Accelerator <onboarding@resend.dev>',
       to,
       subject,
       html,
     });
+
+    if (error) {
+      const message = error.message || JSON.stringify(error);
+      throw new Error(`Resend email failed: ${message}`);
+    }
   } else {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      throw new Error('Email is not configured. Set RESEND_API_KEY or EMAIL_USER/EMAIL_PASS.');
+    }
+
     const t = getTransporter();
     await t.sendMail({
       from: `"AI Career Accelerator" <${process.env.EMAIL_USER}>`,
@@ -115,9 +129,12 @@ async function sendWelcomeEmail(email) {
 }
 
 async function sendLeadNotification(lead) {
-  if (!process.env.EMAIL_USER && !process.env.RESEND_API_KEY) return;
+  const notificationEmail = process.env.EMAIL_TO || process.env.EMAIL_USER;
+
+  if (!notificationEmail || !validator.isEmail(notificationEmail)) return;
+
   await sendEmail({
-    to: process.env.EMAIL_USER,
+    to: notificationEmail,
     subject: `🔔 New Lead: ${lead.name} (${lead.source})`,
     html: `
       <div style="font-family:Arial,sans-serif;padding:20px;background:#050810;color:white;">
