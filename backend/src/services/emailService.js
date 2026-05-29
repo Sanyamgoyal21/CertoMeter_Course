@@ -9,10 +9,11 @@ function useResend() {
 let transporter = null;
 function getTransporter() {
   if (transporter) return transporter;
+  const port = parseInt(process.env.EMAIL_PORT || '587');
   transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.EMAIL_PORT || '587'),
-    secure: false,
+    port,
+    secure: port === 465, // true for 465 (SSL), false for 587 (STARTTLS)
     auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
   });
   return transporter;
