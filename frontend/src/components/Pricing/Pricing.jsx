@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Check, Zap, Clock, Shield } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Check, Zap, Clock, Shield, X } from 'lucide-react';
 import { useScrollReveal } from '../../hooks/useScrollAnimation';
 import MagneticButton from '../ui/MagneticButton';
 import GlowOrb from '../ui/GlowOrb';
+import { useRazorpay } from '../../hooks/useRazorpay';
 
 const features = [
   '15+ hours of self-paced content',
@@ -50,16 +51,120 @@ function CountdownTimer({ expiresIn = 3 * 24 * 60 * 60 }) {
   );
 }
 
+function PaymentModal({ onClose, onSubmit, loading }) {
+  const [form, setForm] = useState({ name: '', email: '', phone: '' });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.email.trim()) return;
+    onSubmit(form);
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)' }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        className="w-full max-w-md glass-strong rounded-3xl p-8 border border-white/20"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="font-display font-bold text-xl text-white">Complete Your Enrollment</h3>
+            <p className="text-sm text-gray-500 mt-1">You'll be redirected to secure payment</p>
+          </div>
+          <button onClick={onClose} className="text-gray-500 hover:text-white transition-colors">
+            <X size={20} />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="text-xs text-gray-500 mb-1 block">Full Name *</label>
+            <input
+              type="text"
+              value={form.name}
+              onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
+              placeholder="Priya Sharma"
+              required
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-accent-orange/50 transition-colors"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-gray-500 mb-1 block">Email Address *</label>
+            <input
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))}
+              placeholder="priya@gmail.com"
+              required
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-accent-orange/50 transition-colors"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-gray-500 mb-1 block">Phone Number</label>
+            <input
+              type="tel"
+              value={form.phone}
+              onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))}
+              placeholder="+91 98765 43210"
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-accent-orange/50 transition-colors"
+            />
+          </div>
+
+          <div className="glass rounded-2xl p-3 border border-accent-orange/20 flex items-center justify-between">
+            <span className="text-sm text-gray-400">Amount to pay</span>
+            <span className="font-bold text-accent-orange text-lg">₹5,999</span>
+          </div>
+
+          <button type="submit" disabled={loading} className="btn-primary w-full text-base py-4">
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Opening Payment...
+              </span>
+            ) : (
+              'Pay Securely — ₹5,999 →'
+            )}
+          </button>
+
+          <div className="flex items-center justify-center gap-4 pt-2">
+            <img src="https://razorpay.com/favicon.ico" alt="Razorpay" className="w-4 h-4 opacity-50" />
+            <p className="text-xs text-gray-600">Secured by Razorpay · UPI · Cards · Net Banking · Wallets</p>
+          </div>
+        </form>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 export default function Pricing() {
   const { ref, isInView } = useScrollReveal();
-  const [billingLoading, setBillingLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [paymentLoading, setPaymentLoading] = useState(false);
+  const { initiatePayment } = useRazorpay();
 
-  const handleEnroll = () => {
-    setBillingLoading(true);
-    setTimeout(() => {
-      setBillingLoading(false);
-      document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
-    }, 800);
+  const handleEnroll = () => setShowModal(true);
+
+  const handlePaymentSubmit = async (form) => {
+    setPaymentLoading(true);
+    await initiatePayment({
+      ...form,
+      onSuccess: () => {
+        setShowModal(false);
+        setPaymentLoading(false);
+      },
+      onFailure: () => setPaymentLoading(false),
+    });
+    setPaymentLoading(false);
   };
 
   return (
@@ -152,20 +257,9 @@ export default function Pricing() {
                   <MagneticButton strength={0.2} className="w-full">
                     <button
                       onClick={handleEnroll}
-                      disabled={billingLoading}
                       className="btn-primary w-full text-lg py-5 animate-glow"
                     >
-                      {billingLoading ? (
-                        <span className="flex items-center gap-2">
-                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                          Processing...
-                        </span>
-                      ) : (
-                        <>
-                          Enroll Now — ₹5,999
-                          <span className="ml-1">→</span>
-                        </>
-                      )}
+                      Enroll Now — ₹5,999 →
                     </button>
                   </MagneticButton>
 
@@ -220,6 +314,17 @@ export default function Pricing() {
           </div>
         </motion.div>
       </div>
+
+      {/* Payment Modal */}
+      <AnimatePresence>
+        {showModal && (
+          <PaymentModal
+            onClose={() => setShowModal(false)}
+            onSubmit={handlePaymentSubmit}
+            loading={paymentLoading}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }

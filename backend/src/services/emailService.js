@@ -219,10 +219,69 @@ async function sendTestEmail(to) {
   });
 }
 
+async function sendPaymentConfirmation(order) {
+  const frontendUrl = getFrontendUrl();
+  await sendEmail({
+    to: order.email,
+    subject: `🎉 Payment Confirmed! Welcome to AI Career Accelerator`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <body style="margin:0;padding:0;background:#050810;font-family:'Inter',Arial,sans-serif;">
+        <div style="max-width:600px;margin:0 auto;padding:40px 20px;">
+          <div style="text-align:center;margin-bottom:24px;">
+            <div style="display:inline-block;background:linear-gradient(135deg,#ff6b35,#ec4899);border-radius:12px;padding:10px 18px;">
+              <span style="color:white;font-weight:bold;font-size:18px;">⚡ AICareer</span>
+            </div>
+          </div>
+
+          <div style="background:linear-gradient(135deg,rgba(16,185,129,0.1),rgba(0,217,255,0.1));border:1px solid rgba(16,185,129,0.3);border-radius:20px;padding:32px;text-align:center;margin-bottom:24px;">
+            <div style="font-size:56px;margin-bottom:16px;">🎉</div>
+            <h1 style="color:white;font-size:24px;margin:0 0 8px;font-weight:700;">You're In, ${order.name.split(' ')[0]}!</h1>
+            <p style="color:#10b981;font-size:16px;font-weight:600;margin:0;">Payment of ₹5,999 confirmed</p>
+          </div>
+
+          <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:24px;margin-bottom:24px;">
+            <h3 style="color:white;font-size:15px;margin:0 0 16px;">📋 Order Summary</h3>
+            <table style="width:100%;font-size:13px;">
+              <tr><td style="color:#9ca3af;padding:6px 0;">Order ID</td><td style="color:white;text-align:right;">${order.razorpayOrderId}</td></tr>
+              <tr><td style="color:#9ca3af;padding:6px 0;">Payment ID</td><td style="color:white;text-align:right;">${order.razorpayPaymentId}</td></tr>
+              <tr><td style="color:#9ca3af;padding:6px 0;">Amount</td><td style="color:#10b981;text-align:right;font-weight:bold;">₹5,999</td></tr>
+              <tr><td style="color:#9ca3af;padding:6px 0;">Date</td><td style="color:white;text-align:right;">${new Date().toLocaleDateString('en-IN')}</td></tr>
+            </table>
+          </div>
+
+          <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:24px;margin-bottom:24px;">
+            <h3 style="color:white;font-size:15px;margin:0 0 16px;">🚀 What happens next?</h3>
+            ${['You will receive course access within 24 hours', 'Join our Discord community', 'Start with Module 1 — AI Foundations', 'Complete your profile for personalized learning'].map((s, i) =>
+              `<div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+                <div style="width:24px;height:24px;background:#ff6b35;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:11px;font-weight:bold;flex-shrink:0;">${i + 1}</div>
+                <span style="color:#d1d5db;font-size:14px;">${s}</span>
+              </div>`
+            ).join('')}
+          </div>
+
+          <div style="text-align:center;margin-bottom:24px;">
+            <a href="${frontendUrl}" style="display:inline-block;background:linear-gradient(135deg,#ff6b35,#ec4899);color:white;text-decoration:none;font-weight:700;padding:14px 36px;border-radius:50px;">
+              Access Your Course →
+            </a>
+          </div>
+
+          <p style="text-align:center;color:#4b5563;font-size:12px;">
+            Questions? WhatsApp us: +91 83603 41355 · hello@aicareers.com
+          </p>
+        </div>
+      </body>
+      </html>
+    `,
+  });
+}
+
 module.exports = {
   sendWelcomeEmail,
   sendLeadNotification,
   sendContactConfirmation,
+  sendPaymentConfirmation,
   sendTestEmail,
   getEmailConfigStatus,
 };
