@@ -14,23 +14,31 @@ router.post('/subscribe', async (req, res) => {
     }
 
     const normalizedEmail = email.trim().toLowerCase();
-
-    // Check if already subscribed
     const existing = await Subscriber.findOne({ email: normalizedEmail });
-    if (existing) {
-      return res.json({ success: true, message: "You're already subscribed!" });
+    const alreadySubscribed = !!existing;
+
+    if (!alreadySubscribed) {
+      await Subscriber.create({ email: normalizedEmail, source });
+      console.log(`New subscriber: ${normalizedEmail}`);
     }
 
-    // Save to MongoDB
-    await Subscriber.create({ email: normalizedEmail, source });
-    console.log(`📧 New subscriber: ${normalizedEmail}`);
+    try {
+      await sendWelcomeEmail(normalizedEmail);
+      console.log(`Welcome email sent: ${normalizedEmail}`);
+    } catch (error) {
+      console.error('Welcome email failed:', error.message);
+      return res.status(502).json({
+        error: 'Subscribed, but the welcome email could not be sent. Please try again later.',
+        details: process.env.NODE_ENV === 'production' ? undefined : error.message,
+      });
+    }
 
-    // Send welcome email (non-blocking)
-    sendWelcomeEmail(normalizedEmail).catch(err =>
-      console.error('Welcome email failed:', err.message)
-    );
-
-    res.json({ success: true, message: 'Successfully subscribed to newsletter!' });
+    res.json({
+      success: true,
+      message: alreadySubscribed
+        ? "You're already subscribed! We sent the welcome email again."
+        : 'Successfully subscribed to newsletter!',
+    });
   } catch (error) {
     console.error('Newsletter subscribe error:', error.message);
     res.status(500).json({ error: 'Subscription failed. Please try again.' });
