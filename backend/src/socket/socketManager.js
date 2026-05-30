@@ -1,60 +1,49 @@
-const { cache } = require('../config/redis');
+const { getTotalVisitorsFromDB, getPaidMembersCount } = require('../controllers/analyticsController');
 const { v4: uuidv4 } = require('uuid');
 
-const ACTIVE_USERS_KEY = 'active_users';
-const TOTAL_VISITORS_KEY = 'total_visitors';
 const BROADCAST_INTERVAL = 3000;
 
 function initSocketManager(io) {
+  // Keyed by socket.id — one entry per open tab, guaranteed unique
   const connectedSockets = new Map();
 
-  io.on('connection', async (socket) => {
-    const sessionId = socket.handshake.query.sessionId || uuidv4();
-    connectedSockets.set(socket.id, sessionId);
-
-    // Track active user
-    await cache.sadd(ACTIVE_USERS_KEY, sessionId);
-    await cache.incr(TOTAL_VISITORS_KEY);
-
-    console.log(`🔌 Client connected: ${socket.id} (session: ${sessionId})`);
-
-    // Send initial counts immediately
-    const activeCount = await cache.scard(ACTIVE_USERS_KEY);
-    const totalVisitors = await cache.get(TOTAL_VISITORS_KEY);
-
-    socket.emit('stats:update', {
-      activeUsers: Math.max(parseInt(activeCount) || 1, 1),
-      totalVisitors: parseInt(totalVisitors) || 1,
-      timestamp: Date.now(),
-    });
-
-    socket.on('ping', () => socket.emit('pong', { timestamp: Date.now() }));
-
-    socket.on('disconnect', async () => {
-      const sid = connectedSockets.get(socket.id);
-      if (sid) {
-        await cache.srem(ACTIVE_USERS_KEY, sid);
-        connectedSockets.delete(socket.id);
-      }
-      console.log(`🔌 Client disconnected: ${socket.id}`);
-    });
-  });
-
-  // Broadcast active user count to all clients
-  setInterval(async () => {
+  async function broadcast() {
     try {
-      const activeCount = await cache.scard(ACTIVE_USERS_KEY);
-      const totalVisitors = await cache.get(TOTAL_VISITORS_KEY);
-
+      const [totalVisitors, paidMembers] = await Promise.all([
+        getTotalVisitorsFromDB(),
+        getPaidMembersCount(),
+      ]);
       io.emit('stats:update', {
-        activeUsers: Math.max(parseInt(activeCount) || 0, io.engine.clientsCount),
-        totalVisitors: parseInt(totalVisitors) || 0,
+        activeUsers: connectedSockets.size,
+        totalVisitors,
+        paidMembers,
         timestamp: Date.now(),
       });
     } catch (err) {
       console.error('Broadcast error:', err.message);
     }
-  }, BROADCAST_INTERVAL);
+  }
+
+  io.on('connection', async (socket) => {
+    const sessionId = socket.handshake.query.sessionId || uuidv4();
+    connectedSockets.set(socket.id, sessionId);
+
+    console.log(`🔌 +1 connected | socket: ${socket.id} | session: ${sessionId} | active: ${connectedSockets.size}`);
+
+    // Immediately tell ALL clients the updated count
+    broadcast();
+
+    socket.on('ping', () => socket.emit('pong', { timestamp: Date.now() }));
+
+    socket.on('disconnect', () => {
+      connectedSockets.delete(socket.id);
+      console.log(`🔌 -1 disconnected | socket: ${socket.id} | active: ${connectedSockets.size}`);
+      broadcast();
+    });
+  });
+
+  // Heartbeat — one timer for the whole server lifetime
+  setInterval(broadcast, BROADCAST_INTERVAL);
 
   console.log('🔌 Socket.IO manager initialized');
 }

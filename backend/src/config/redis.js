@@ -46,9 +46,10 @@ const cache = {
   async sadd(key, ...members) {
     if (redisClient) return redisClient.sadd(key, ...members);
     const set = inMemoryStore.get(key) || new Set();
-    members.forEach(m => set.add(m));
+    let added = 0;
+    members.forEach(m => { if (!set.has(m)) { set.add(m); added++; } });
     inMemoryStore.set(key, set);
-    return members.length;
+    return added; // 0 if already existed (matches Redis behaviour)
   },
   async srem(key, ...members) {
     if (redisClient) return redisClient.srem(key, ...members);

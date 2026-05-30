@@ -95,7 +95,7 @@ function PulsingOrb({ count }) {
 
 export default function Community() {
   const { ref, isInView } = useScrollReveal();
-  const { activeUsers } = useSocket();
+  const { activeUsers, totalVisitors, paidMembers } = useSocket();
 
   return (
     <section id="community" className="relative py-24 lg:py-32 overflow-hidden">
@@ -132,9 +132,9 @@ export default function Community() {
             {/* Stats */}
             <div className="grid grid-cols-2 gap-4">
               {[
-                { val: 5000, suffix: '+', label: 'Total Members', icon: '👥', color: 'text-accent-orange' },
+                { val: paidMembers, suffix: '', label: 'Total Members', icon: '👥', color: 'text-accent-orange' },
                 { val: activeUsers, suffix: '', label: 'Online Now', icon: '🟢', color: 'text-green-400' },
-                { val: 200, suffix: '+', label: 'Daily Messages', icon: '💬', color: 'text-accent-cyan' },
+                { val: totalVisitors, suffix: '', label: 'Total Visitors', icon: '🌐', color: 'text-accent-cyan' },
                 { val: 98, suffix: '%', label: 'Questions Answered', icon: '✅', color: 'text-accent-purple' },
               ].map((stat) => (
                 <div key={stat.label} className="glass rounded-2xl p-4 border border-white/10 text-center">

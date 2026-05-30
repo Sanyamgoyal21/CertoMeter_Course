@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Zap } from 'lucide-react';
+import { Menu, X, Zap, Sun, Moon } from 'lucide-react';
 import MagneticButton from './ui/MagneticButton';
+import { useTheme } from '../context/ThemeContext';
 
 const navLinks = [
   { label: 'About', href: '#about' },
@@ -15,6 +16,7 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { theme, toggle } = useTheme();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -66,8 +68,33 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* CTA */}
+            {/* CTA + Theme toggle */}
             <div className="hidden lg:flex items-center gap-3">
+              {/* Theme toggle */}
+              <motion.button
+                onClick={toggle}
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                className="relative w-14 h-7 rounded-full border transition-all duration-300 flex items-center px-1"
+                style={{
+                  background: theme === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+                  borderColor: theme === 'dark' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)',
+                }}
+                aria-label="Toggle theme"
+              >
+                <motion.div
+                  layout
+                  animate={{ x: theme === 'light' ? 28 : 0 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  className="w-5 h-5 rounded-full flex items-center justify-center"
+                  style={{ background: 'linear-gradient(135deg, #ff6b35, #8b5cf6)' }}
+                >
+                  {theme === 'dark'
+                    ? <Moon size={11} className="text-white" />
+                    : <Sun size={11} className="text-white" />}
+                </motion.div>
+              </motion.button>
+
               <MagneticButton strength={0.2}>
                 <button
                   onClick={() => scrollTo('#pricing')}
@@ -78,14 +105,38 @@ export default function Navbar() {
               </MagneticButton>
             </div>
 
-            {/* Mobile menu toggle */}
-            <button
-              className="lg:hidden p-2 text-gray-300 hover:text-white transition-colors"
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Toggle menu"
-            >
-              {menuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            {/* Mobile controls */}
+            <div className="lg:hidden flex items-center gap-2">
+              <motion.button
+                onClick={toggle}
+                whileTap={{ scale: 0.9 }}
+                className="w-12 h-6 rounded-full border flex items-center px-1 transition-all duration-300"
+                style={{
+                  background: theme === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+                  borderColor: theme === 'dark' ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)',
+                }}
+                aria-label="Toggle theme"
+              >
+                <motion.div
+                  layout
+                  animate={{ x: theme === 'light' ? 24 : 0 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  className="w-4 h-4 rounded-full flex items-center justify-center"
+                  style={{ background: 'linear-gradient(135deg, #ff6b35, #8b5cf6)' }}
+                >
+                  {theme === 'dark'
+                    ? <Moon size={9} className="text-white" />
+                    : <Sun size={9} className="text-white" />}
+                </motion.div>
+              </motion.button>
+              <button
+                className="p-2 text-gray-300 hover:text-white transition-colors"
+                onClick={() => setMenuOpen(!menuOpen)}
+                aria-label="Toggle menu"
+              >
+                {menuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
         </div>
       </motion.nav>

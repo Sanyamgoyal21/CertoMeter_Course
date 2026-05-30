@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const visitorSchema = new mongoose.Schema({
-  sessionId: { type: String, required: true, unique: true, index: false },
+  sessionId: { type: String, required: true, unique: true },
   ipAddress: String,
   userAgent: String,
   referrer: String,
@@ -11,7 +11,6 @@ const visitorSchema = new mongoose.Schema({
   lastSeen: { type: Date, default: Date.now },
 });
 
-visitorSchema.index({ sessionId: 1 });
 visitorSchema.index({ firstVisit: -1 });
 
 module.exports = mongoose.models.Visitor || mongoose.model('Visitor', visitorSchema);

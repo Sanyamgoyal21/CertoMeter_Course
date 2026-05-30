@@ -2,6 +2,7 @@ import { useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, ScrollRestoration } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { SocketProvider } from './context/SocketContext';
+import { ThemeProvider } from './context/ThemeContext';
 import CursorEffect from './components/ui/CursorEffect';
 import MascotChat from './components/MascotChat/MascotChat';
 import { trackVisitor } from './utils/api';
@@ -77,6 +78,7 @@ function LandingPage() {
 export default function App() {
   return (
     <BrowserRouter>
+      <ThemeProvider>
       <SocketProvider>
         <Suspense fallback={<SectionLoader />}>
           <Routes>
@@ -91,6 +93,7 @@ export default function App() {
           </Routes>
         </Suspense>
       </SocketProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

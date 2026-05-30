@@ -9,6 +9,7 @@ const { Server } = require('socket.io');
 const { connectDB } = require('./src/config/database');
 const { getRedisClient } = require('./src/config/redis');
 const { initSocketManager } = require('./src/socket/socketManager');
+const { setIO } = require('./src/utils/ioInstance');
 const analyticsRoutes = require('./src/routes/analytics');
 const leadsRoutes = require('./src/routes/leads');
 const newsletterRoutes = require('./src/routes/newsletter');
@@ -79,6 +80,7 @@ async function startServer() {
   try {
     await connectDB();
     await getRedisClient();
+    setIO(io);
     initSocketManager(io);
     server.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);

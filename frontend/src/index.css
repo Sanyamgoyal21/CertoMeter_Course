@@ -209,3 +209,140 @@
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
+
+/* ─── Light Theme ─────────────────────────────────────────── */
+html.light {
+  color-scheme: light;
+}
+
+html.light body {
+  background-color: #f0f4ff;
+  color: #0f172a;
+}
+
+html.light ::-webkit-scrollbar-track { background: #e2e8f0; }
+html.light ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #ff6b35, #8b5cf6); }
+
+/* Noise overlay — barely visible on light bg */
+html.light .noise-overlay { opacity: 0.015; }
+
+/* Backgrounds */
+html.light .bg-dark-900,
+html.light .bg-dark-800,
+html.light .bg-dark-700 { background-color: #f0f4ff !important; }
+
+/* Glass surfaces → white cards */
+html.light .glass {
+  background: rgba(255, 255, 255, 0.75) !important;
+  border-color: rgba(0, 0, 0, 0.09) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+html.light .glass-strong {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Text */
+html.light .text-white  { color: #0f172a !important; }
+html.light .text-gray-100 { color: #1e293b !important; }
+html.light .text-gray-200 { color: #334155 !important; }
+html.light .text-gray-300 { color: #475569 !important; }
+html.light .text-gray-400 { color: #64748b !important; }
+html.light .text-gray-500 { color: #94a3b8 !important; }
+html.light .text-gray-600 { color: #94a3b8 !important; }
+html.light .text-gray-700 { color: #64748b !important; }
+
+/* Navbar */
+html.light nav.fixed {
+  background: rgba(240, 244, 255, 0.92) !important;
+  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
+}
+html.light nav button { color: #334155 !important; }
+html.light nav button:hover { color: #0f172a !important; background: rgba(0,0,0,0.05) !important; }
+
+/* Mobile menu */
+html.light .bg-dark-900\/95 { background: rgba(240, 244, 255, 0.97) !important; }
+html.light .border-white\/10 { border-color: rgba(0,0,0,0.08) !important; }
+html.light .border-white\/5  { border-color: rgba(0,0,0,0.05) !important; }
+html.light .border-white\/20 { border-color: rgba(0,0,0,0.1)  !important; }
+
+/* Inputs */
+html.light input,
+html.light textarea {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: #0f172a !important;
+}
+html.light input::placeholder,
+html.light textarea::placeholder { color: #94a3b8 !important; }
+
+/* Section dividers / borders */
+html.light .border-t { border-top-color: rgba(0,0,0,0.07) !important; }
+
+/* Inline dark bg used by chat panel / modal */
+html.light [style*="background: #0f0f13"],
+html.light [style*="background:#0f0f13"] {
+  background: #ffffff !important;
+}
+html.light [style*="background: #1a1a2"] { background: #f1f5ff !important; }
+html.light [style*="color: #ddd"],
+html.light [style*="color:#ddd"] { color: #1e293b !important; }
+html.light [style*="color: #e2e2e2"] { color: #334155 !important; }
+html.light [style*="border: 1px solid rgba(255,255,255,0.07)"],
+html.light [style*="border: 1px solid rgba(255,255,255,0.08)"],
+html.light [style*="border: 1px solid rgba(255,255,255,0.1)"] {
+  border-color: rgba(0,0,0,0.09) !important;
+}
+
+/* Cursor glow — softer on light bg */
+html.light .cursor-glow {
+  background: radial-gradient(circle, rgba(255,107,53,0.05) 0%, transparent 70%);
+}
+
+/* Testimonial / card dark BG overrides */
+html.light [class*="bg-dark"] { background-color: #f0f4ff !important; }
+
+/* Marquee track bg */
+html.light .glass.rounded-3xl { background: rgba(255,255,255,0.8) !important; }
+
+/* ── Footer ── */
+/* Kill the dark-to-black gradient in the footer */
+html.light footer .absolute.inset-0 {
+  background: linear-gradient(to bottom, transparent, rgba(220,228,255,0.6)) !important;
+}
+html.light footer {
+  background-color: #e8eeff;
+  border-top-color: rgba(0,0,0,0.08) !important;
+}
+/* Footer text */
+html.light footer .text-gray-500 { color: #475569 !important; }
+html.light footer .text-gray-600 { color: #334155 !important; }
+html.light footer .text-gray-700 { color: #1e293b !important; }
+html.light footer h4.text-gray-400 { color: #64748b !important; }
+html.light footer a,
+html.light footer button { color: #475569 !important; }
+html.light footer a:hover,
+html.light footer button:hover { color: #0f172a !important; }
+/* Social icon circles */
+html.light footer .glass {
+  background: rgba(255,255,255,0.7) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+html.light footer .text-gray-500.transition-all { color: #64748b !important; }
+/* Bottom bar border */
+html.light footer .border-white\/5 { border-color: rgba(0,0,0,0.08) !important; }
+/* Footer input */
+html.light footer input {
+  background: rgba(255,255,255,0.7) !important;
+  border-color: rgba(0,0,0,0.12) !important;
+  color: #0f172a !important;
+}
+html.light footer input::placeholder { color: #94a3b8 !important; }
+
+/* ── Sticky CTA bar ── */
+html.light .glass-strong {
+  background: rgba(255,255,255,0.92) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
+}
+html.light .shadow-black\/50 { box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important; }
