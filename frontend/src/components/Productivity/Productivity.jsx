@@ -133,7 +133,7 @@ export default function Productivity() {
                   </motion.div>
                 ))}
                 <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-green-500/10 border border-green-500/20">
-                  <span className="text-sm font-semibold text-green-400">Total time saved</span>
+                  <span className="text-sm font-semibold text-green-400">Total time taken</span>
                   <span className="text-lg font-bold text-green-400">~30 min</span>
                 </div>
               </div>

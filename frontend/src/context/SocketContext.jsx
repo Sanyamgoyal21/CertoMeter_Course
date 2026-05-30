@@ -13,7 +13,7 @@ function getOrCreateSessionId() {
 }
 
 export function SocketProvider({ children }) {
-  const [activeUsers, setActiveUsers] = useState(0);
+  const [activeUsers, setActiveUsers] = useState(1); // at minimum the current user is present
   const [totalVisitors, setTotalVisitors] = useState(0);
   const [paidMembers, setPaidMembers] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
@@ -50,7 +50,7 @@ export function SocketProvider({ children }) {
     socket.on('disconnect', () => setIsConnected(false));
 
     socket.on('stats:update', (data) => {
-      if (data.activeUsers >= 0) setActiveUsers(data.activeUsers);
+      if (data.activeUsers > 0) setActiveUsers(data.activeUsers);
       if (data.totalVisitors > 0) setTotalVisitors(data.totalVisitors);
       if (data.paidMembers >= 0) setPaidMembers(data.paidMembers);
     });

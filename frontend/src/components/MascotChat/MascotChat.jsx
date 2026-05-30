@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, animate } from 'framer-motion';
 import { X, Send } from 'lucide-react';
 import axios from 'axios';
+import { useTheme } from '../../context/ThemeContext';
 
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 const SIZE = 110;
@@ -9,6 +10,21 @@ const PAD = 60;
 const WELCOME = "Hey there! 👋 I'm your AI study buddy. Ask me anything about the course!";
 
 export default function MascotChat() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
+
+  // Theme-aware color tokens
+  const colors = {
+    bg:         isLight ? '#ffffff'         : '#0f0f13',
+    surface:    isLight ? '#f1f5ff'         : '#1a1a26',
+    border:     isLight ? 'rgba(0,0,0,0.09)': 'rgba(255,255,255,0.07)',
+    text:       isLight ? '#0f172a'         : '#dddddd',
+    textMuted:  isLight ? '#64748b'         : '#94a3b8',
+    inputBg:    isLight ? 'rgba(0,0,0,0.04)': 'rgba(255,255,255,0.05)',
+    inputBorder:isLight ? 'rgba(0,0,0,0.12)': 'rgba(255,255,255,0.1)',
+    shadow:     isLight ? '0 20px 60px rgba(0,0,0,0.15)' : '0 20px 60px rgba(0,0,0,0.7)',
+  };
+
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -137,9 +153,9 @@ export default function MascotChat() {
               flexDirection: 'column',
               borderRadius: 22,
               overflow: 'hidden',
-              border: '1px solid rgba(255,255,255,0.1)',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.7)',
-              background: '#0f0f13',
+              border: `1px solid ${colors.border}`,
+              boxShadow: colors.shadow,
+              background: colors.bg,
               cursor: 'auto',
             }}
           >
@@ -165,9 +181,9 @@ export default function MascotChat() {
                     padding: '9px 13px',
                     fontSize: 13,
                     lineHeight: 1.5,
-                    color: msg.role === 'user' ? '#fff' : '#ddd',
-                    background: msg.role === 'user' ? 'linear-gradient(135deg,#ff6b35,#e040fb)' : '#1a1a26',
-                    border: msg.role === 'user' ? 'none' : '1px solid rgba(255,255,255,0.07)',
+                    color: msg.role === 'user' ? '#fff' : colors.text,
+                    background: msg.role === 'user' ? 'linear-gradient(135deg,#ff6b35,#e040fb)' : colors.surface,
+                    border: msg.role === 'user' ? 'none' : `1px solid ${colors.border}`,
                   }}>
                     {msg.content}
                   </div>
@@ -175,7 +191,7 @@ export default function MascotChat() {
               ))}
               {loading && (
                 <div style={{ display: 'flex' }}>
-                  <div style={{ background: '#1a1a26', borderRadius: '16px 16px 16px 4px', padding: '10px 14px', border: '1px solid rgba(255,255,255,0.07)' }}>
+                  <div style={{ background: colors.surface, borderRadius: '16px 16px 16px 4px', padding: '10px 14px', border: `1px solid ${colors.border}` }}>
                     <div style={{ display: 'flex', gap: 5 }}>
                       {[0, 1, 2].map((i) => (
                         <motion.div key={i}
@@ -192,14 +208,14 @@ export default function MascotChat() {
             </div>
 
             {/* Input */}
-            <form onSubmit={sendMessage} style={{ display: 'flex', gap: 8, padding: '10px', borderTop: '1px solid rgba(255,255,255,0.07)', background: '#0f0f13', flexShrink: 0 }}>
+            <form onSubmit={sendMessage} style={{ display: 'flex', gap: 8, padding: '10px', borderTop: `1px solid ${colors.border}`, background: colors.bg, flexShrink: 0 }}>
               <input
                 ref={inputRef}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask your doubt..."
                 disabled={loading}
-                style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '8px 12px', color: '#fff', fontSize: 13, outline: 'none' }}
+                style={{ flex: 1, background: colors.inputBg, border: `1px solid ${colors.inputBorder}`, borderRadius: 12, padding: '8px 12px', color: colors.text, fontSize: 13, outline: 'none' }}
               />
               <button type="submit" disabled={loading || !input.trim()} style={{ width: 36, height: 36, borderRadius: 11, background: 'linear-gradient(135deg,#ff6b35,#e040fb)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', opacity: loading || !input.trim() ? 0.4 : 1, flexShrink: 0 }}>
                 <Send size={14} color="#fff" />

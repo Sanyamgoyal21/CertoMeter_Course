@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight, Play, Star, Users, TrendingUp, Award } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Play, Star, Users, TrendingUp, Award, X } from 'lucide-react';
 import AnimatedCounter from '../ui/AnimatedCounter';
 import MagneticButton from '../ui/MagneticButton';
 import GlowOrb from '../ui/GlowOrb';
@@ -15,12 +15,25 @@ const floatingStats = [
 export default function Hero() {
   const { activeUsers } = useSocket();
   const containerRef = useRef(null);
+  const videoRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: containerRef });
   const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const [showVideo, setShowVideo] = useState(false);
 
   const scrollToPricing = () => document.querySelector('#pricing')?.scrollIntoView({ behavior: 'smooth' });
-  const scrollToAbout = () => document.querySelector('#about')?.scrollIntoView({ behavior: 'smooth' });
+
+  const openVideo = () => setShowVideo(true);
+  const closeVideo = () => {
+    setShowVideo(false);
+    if (videoRef.current) { videoRef.current.pause(); videoRef.current.currentTime = 0; }
+  };
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') closeVideo(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   return (
     <section
@@ -148,10 +161,10 @@ export default function Hero() {
                 </button>
               </MagneticButton>
               <button
-                onClick={scrollToAbout}
+                onClick={openVideo}
                 className="btn-secondary text-base group flex items-center justify-center gap-2"
               >
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
                   <Play size={14} className="text-white ml-0.5" fill="white" />
                 </div>
                 Watch Preview
@@ -307,6 +320,50 @@ export default function Hero() {
           ))}
         </motion.div>
       </motion.div>
+
+      {/* Video Modal */}
+      <AnimatePresence>
+        {showVideo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[9998] flex items-center justify-center p-4"
+            style={{ background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(8px)' }}
+            onClick={closeVideo}
+          >
+            <motion.div
+              initial={{ scale: 0.92, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+              className="relative w-full max-w-4xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close button */}
+              <button
+                onClick={closeVideo}
+                className="absolute -top-10 right-0 text-white/70 hover:text-white transition-colors flex items-center gap-2 text-sm"
+              >
+                <X size={18} /> Close
+              </button>
+
+              {/* Video player */}
+              <div className="rounded-2xl overflow-hidden shadow-2xl" style={{ aspectRatio: '16/9' }}>
+                <video
+                  ref={videoRef}
+                  src="/Create_a_cinematic_advertiseme.mp4"
+                  controls
+                  autoPlay
+                  className="w-full h-full object-cover"
+                  style={{ display: 'block' }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Scroll indicator */}
       <motion.div
