@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, ScrollRestoration } from 'react-router-do
 import { v4 as uuidv4 } from 'uuid';
 import { SocketProvider } from './context/SocketContext';
 import CursorEffect from './components/ui/CursorEffect';
+import MascotChat from './components/MascotChat/MascotChat';
 import { trackVisitor } from './utils/api';
 
 // Landing page sections
@@ -68,6 +69,7 @@ function LandingPage() {
       </main>
       <Suspense fallback={null}><Footer /></Suspense>
       <StickyCTA />
+      <MascotChat />
     </div>
   );
 }

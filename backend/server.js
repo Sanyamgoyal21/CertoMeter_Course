@@ -14,6 +14,7 @@ const leadsRoutes = require('./src/routes/leads');
 const newsletterRoutes = require('./src/routes/newsletter');
 const paymentRoutes = require('./src/routes/payment');
 const emailRoutes = require('./src/routes/email');
+const chatRoutes = require('./src/routes/chat');
 const rateLimiter = require('./src/middleware/rateLimiter');
 
 const app = express();
@@ -56,6 +57,7 @@ app.use('/api/leads', leadsRoutes);
 app.use('/api/newsletter', newsletterRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/email', emailRoutes);
+app.use('/api/chat', chatRoutes);
 
 // 404 handler
 app.use((req, res) => {

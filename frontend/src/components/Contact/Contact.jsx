@@ -11,7 +11,7 @@ export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
   const [loading, setLoading] = useState(false);
 
-  const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '919999999999';
+  const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '+91 8360341355';
   const whatsappMsg = encodeURIComponent(import.meta.env.VITE_WHATSAPP_MESSAGE || "Hi! I'm interested in the AI Career Accelerator course. Can you tell me more?");
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappMsg}`;
 
@@ -86,7 +86,7 @@ export default function Contact() {
               <div>
                 <p className="font-display font-bold text-white text-lg">Chat on WhatsApp</p>
                 <p className="text-green-400 font-medium text-sm">Fastest response — typically 15 min</p>
-                <p className="text-gray-500 text-xs mt-1">+91 99999 99999 · Mon–Sun, 9am–9pm</p>
+                <p className="text-gray-500 text-xs mt-1">+91 83603 41355 · Mon–Sun, 9am–9pm</p>
               </div>
               <div className="ml-auto">
                 <div className="w-8 h-8 rounded-full border border-green-500/30 flex items-center justify-center group-hover:border-green-500 transition-colors">
