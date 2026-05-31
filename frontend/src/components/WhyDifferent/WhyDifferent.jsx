@@ -62,25 +62,50 @@ export default function WhyDifferent() {
           </p>
         </motion.div>
 
-        {/* What you get — creative mosaic */}
-        <div className="mb-20 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          {highlights.map((item, i) => (
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.04 }}
-              whileHover={{ scale: 1.05, y: -4 }}
-              className={`glass rounded-2xl p-4 border border-white/10 hover:border-accent-orange/30 transition-all duration-300 cursor-default
-                ${i === 0 || i === 6 ? 'col-span-2 sm:col-span-1 lg:col-span-2' : ''}
-              `}
-            >
-              <div className="text-2xl mb-2">{item.icon}</div>
-              <h3 className="font-semibold text-white text-sm leading-tight mb-1">{item.title}</h3>
-              <p className="text-xs text-gray-600 leading-relaxed">{item.desc}</p>
-            </motion.div>
-          ))}
+        {/* What you get — numbered steps */}
+        <div className="mb-20 overflow-x-auto scrollbar-hide pb-4">
+          <div className="flex gap-0 min-w-max overflow-visible pt-2">
+            {highlights.map((item, i) => (
+              <div key={item.title} className="flex items-start">
+                {/* Step */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.06 }}
+                  className="flex flex-col items-center w-44 pt-3"
+                >
+                  {/* Number + icon */}
+                  <div className="relative mb-4 overflow-visible">
+                    <div className="w-14 h-14 rounded-2xl glass border border-white/15 flex items-center justify-center text-2xl shadow-lg">
+                      {item.icon}
+                    </div>
+                    <span
+                      className="absolute -top-3 -right-3 w-6 h-6 rounded-full flex items-center justify-center text-xs font-black text-white"
+                      style={{ background: `linear-gradient(135deg, #ff6b35, #8b5cf6)` }}
+                    >
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                  </div>
+                  {/* Text */}
+                  <h3 className="font-semibold text-white text-xs text-center leading-snug mb-1 px-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-gray-600 text-center leading-relaxed px-2">
+                    {item.desc}
+                  </p>
+                </motion.div>
+
+                {/* Connector line (not after last item) */}
+                {i < highlights.length - 1 && (
+                  <div className="flex items-start pt-7 shrink-0">
+                    <div className="w-8 border-t-2 border-dashed border-white/10 mt-0" />
+                    <div className="w-2 h-2 rounded-full bg-white/20 -mt-1 shrink-0" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Comparison table */}
@@ -97,7 +122,10 @@ export default function WhyDifferent() {
             </div>
             <div className="text-center">
               <div className="inline-flex items-center gap-2 bg-gradient-to-r from-accent-orange to-accent-pink px-4 py-2 rounded-full">
-                <span className="text-white font-bold text-sm">⚡ AI Career Accelerator</span>
+                <div className="w-5 h-5 rounded-full overflow-hidden shrink-0">
+                  <img src="/Logo.png" alt="logo" className="w-full h-full object-cover" style={{ transform: 'scale(1.45)', transformOrigin: 'center' }} />
+                </div>
+                <span className="text-white font-bold text-sm">AI Career Accelerator</span>
               </div>
             </div>
             <div className="text-center">

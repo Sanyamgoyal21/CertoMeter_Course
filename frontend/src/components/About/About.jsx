@@ -50,14 +50,14 @@ function Phase({ phase, index }) {
       {/* Giant number — background anchor */}
       <motion.span
         initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
+        animate={inView ? { opacity: 0.3 } : {}}
         transition={{ duration: 1.2, delay: 0.1 }}
         className="absolute select-none pointer-events-none font-display font-black leading-none"
         style={{
           fontSize: 'clamp(140px, 22vw, 320px)',
           color: phase.color,
           opacity: 0.06,
-          letterSpacing: '-0.06em',
+          letterSpacing: '-0.01em',
           top: '50%',
           transform: 'translateY(-50%)',
           [isRight ? 'right' : 'left']: '-2%',

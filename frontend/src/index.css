@@ -149,11 +149,11 @@
 }
 
 .marquee-track {
-  animation: marquee 30s linear infinite;
+  animation: marquee 60s linear infinite;
 }
 
 .marquee-track-reverse {
-  animation: marquee-reverse 35s linear infinite;
+  animation: marquee-reverse 60s linear infinite;
 }
 
 /* Floating orbs */

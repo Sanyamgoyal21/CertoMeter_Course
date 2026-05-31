@@ -1,6 +1,13 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useScrollReveal } from '../../hooks/useScrollAnimation';
 import GlowOrb from '../ui/GlowOrb';
+import * as si from 'simple-icons';
+
+const siIcon = (slug) => {
+  const key = 'si' + slug.charAt(0).toUpperCase() + slug.slice(1);
+  return si[key] || null;
+};
 
 const toolCategories = [
   {
@@ -45,8 +52,99 @@ const toolCategories = [
   },
 ];
 
+// Local image paths (all from frontend/public)
+const toolImages = {
+  'ChatGPT':          '/chatgpt.png',
+  'Claude':           '/claude-color.svg',
+  'Midjourney':       '/midjourney.svg',
+  'Runway':           '/Runway.png',
+  'Perplexity':       '/perplexity-color.svg',
+  'Zapier AI':        '/Zapier--Streamline-Svg-Logos.svg',
+  'Zapier':           '/Zapier--Streamline-Svg-Logos.svg',
+  'Jasper':           '/Jasper.png',
+  'Copy.ai':          '/Copy.ai.png',
+  'Canva AI':         '/canva-icon.png',
+  'Synthesia':        '/Synthesia.png',
+  'HeyGen':           '/HeyGen.png',
+  'ElevenLabs':       '/ElevenLabs.png',
+  'Murf':             '/Murf.png',
+  'Invideo AI':       '/Invideo.png',
+  'Adobe Firefly':    '/Adobe Firefly.png',
+  'Apollo AI':        '/Apollo AI.png',
+  'Bing Image':       '/Bing Image.png',
+  'Bolt.new':         '/Bolt.new.png',
+  'DALL-E 3':         '/Dall-E 3.png',
+  'Descript':         '/Descript.png',
+  'GitHub Copilot':   '/GitHub Copilot.png',
+  'Grammarly AI':     '/Grammarly.png',
+  'Make.com':         '/Make.com.png',
+  'Notion AI':        '/Notion.png',
+  'Obsidian + AI':    '/Obsidian + AI.png',
+  'Pipedream':        '/Pipedream.png',
+  'QuillBot':         '/Quillbot.png',
+  'Replit AI':        '/Replit AI.png',
+  'Sora':             '/Sora.png',
+  'Stable Diffusion': '/Stable Diffusion.png',
+  'n8n':              '/n8n.png',
+  'v0.dev':           '/v0.dev.png',
+  'Activepieces':      '/Activepieces.png',
+  'Bardeen':           '/Bardeen.jpg',
+  'Clearscope':        '/Clearscope.png',
+  'Codeium':           '/Codeium.png',
+  'Connected Papers':  '/Connected Papers.png',
+  'Consensus':         '/Consensus.png',
+  'Cursor':            '/Cursor.png',
+  'Elicit':            '/Elicit.jpg',
+  'Fathom AI':         '/Fathom.png',
+  'Ideogram':          '/Ideogram.png',
+  'Lavender':          '/Lavender.png',
+  'Leonardo AI':       '/Leonardo ai.png',
+  'Lovable':           '/Lovable.png',
+  'MarketMuse':        '/MarketMuse.png',
+  'Motion':            '/Motion ai.png',
+  'Otter.ai':          '/Otter.png',
+  'Pika Labs':         '/Pika Labs.png',
+  'Reclaim.ai':        '/Reclaim.png',
+  'Relay.app':         '/Relay.app.png',
+  'Research Rabbit':   '/Research Rabbit.png',
+  'Rytr':              '/Rytr.png',
+  'Scite':             '/Scite.png',
+  'Semantic Scholar':  '/Semantic Scholar.png',
+  'Superhuman':        '/Superhuman.jpg',
+  'Tabnine':           '/Tabnine.png',
+  'Taskade':           '/Taskade ai.png',
+  'Writesonic':        '/Writesonic ai.png',
+  'Gong.io':           '/gong.png',
+  'Mem.ai':            '/mem ai.png',
+  'Surfer SEO':        '/suferseo.png',
+};
+
+// Simple Icons slugs for any remaining gaps
+const toolSiSlugs = {};
+
 const row1Tools = toolCategories.slice(0, 4).flatMap(c => c.tools.map(t => ({ name: t, cat: c.label, color: c.color })));
 const row2Tools = toolCategories.slice(4).flatMap(c => c.tools.map(t => ({ name: t, cat: c.label, color: c.color })));
+
+function ToolIcon({ name, color }) {
+  const imgSrc = toolImages[name];
+  const siSlug = toolSiSlugs[name];
+  const icon = siSlug ? siIcon(siSlug) : null;
+  const [imgFailed, setImgFailed] = useState(false);
+
+  if (imgSrc && !imgFailed) {
+    return (
+      <img src={imgSrc} alt={name} className="w-5 h-5 object-contain"
+        onError={() => setImgFailed(true)} />
+    );
+  }
+  if (icon) {
+    return (
+      <svg viewBox="0 0 24 24" className="w-5 h-5" fill={`#${icon.hex}`}
+        dangerouslySetInnerHTML={{ __html: icon.path }} />
+    );
+  }
+  return <span className="text-sm font-bold" style={{ color }}>{name[0]}</span>;
+}
 
 function ToolChip({ name, cat, color }) {
   return (
@@ -54,9 +152,9 @@ function ToolChip({ name, cat, color }) {
       whileHover={{ scale: 1.05, y: -2 }}
       className="flex items-center gap-3 glass px-4 py-3 rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-200 cursor-default shrink-0 group"
     >
-      <div className="w-8 h-8 rounded-xl flex items-center justify-center text-base"
+      <div className="w-8 h-8 rounded-xl flex items-center justify-center overflow-hidden shrink-0"
         style={{ background: `${color}20`, border: `1px solid ${color}30` }}>
-        {name[0]}
+        <ToolIcon name={name} color={color} />
       </div>
       <div>
         <p className="text-sm font-semibold text-white group-hover:text-accent-cyan transition-colors">{name}</p>
@@ -80,12 +178,12 @@ function MarqueeRow({ tools, reverse = false }) {
 }
 
 const featuredTools = [
-  { name: 'ChatGPT', emoji: '🤖', desc: 'World\'s most powerful AI assistant', color: '#10b981', tag: 'Essential' },
-  { name: 'Midjourney', emoji: '🎨', desc: 'Create stunning AI artwork & visuals', color: '#8b5cf6', tag: 'Creative' },
-  { name: 'Claude', emoji: '⚡', desc: 'Advanced reasoning & long documents', color: '#ff6b35', tag: 'Analysis' },
-  { name: 'Runway', emoji: '🎬', desc: 'AI video generation & editing', color: '#00d9ff', tag: 'Video' },
-  { name: 'Perplexity', emoji: '🔍', desc: 'AI-powered search & research', color: '#f59e0b', tag: 'Research' },
-  { name: 'Zapier', emoji: '⚙️', desc: 'Automate your entire workflow', color: '#ec4899', tag: 'Automation' },
+  { name: 'ChatGPT', logo: '/chatgpt.png', desc: 'World\'s most powerful AI assistant', color: '#10b981', tag: 'Essential' },
+  { name: 'Midjourney', logo: '/midjourney.svg', desc: 'Create stunning AI artwork & visuals', color: '#8b5cf6', tag: 'Creative' },
+  { name: 'Claude', logo: '/claude-color.svg', desc: 'Advanced reasoning & long documents', color: '#ff6b35', tag: 'Analysis' },
+  { name: 'Runway', logo: '/Runway.png', desc: 'AI video generation & editing', color: '#00d9ff', tag: 'Video' },
+  { name: 'Perplexity', logo: '/perplexity-color.svg', desc: 'AI-powered search & research', color: '#f59e0b', tag: 'Research' },
+  { name: 'Zapier', logo: '/Zapier--Streamline-Svg-Logos.svg', desc: 'Automate your entire workflow', color: '#ec4899', tag: 'Automation' },
 ];
 
 export default function AITools() {
@@ -133,9 +231,11 @@ export default function AITools() {
               className="glass rounded-2xl p-5 border border-white/10 hover:border-white/20 transition-all duration-300 group cursor-default"
             >
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0"
+                <div className="w-12 h-12 rounded-2xl overflow-hidden shrink-0 flex items-center justify-center"
                   style={{ background: `${tool.color}20`, border: `1px solid ${tool.color}30` }}>
-                  {tool.emoji}
+                  <div className="w-8 h-8 flex items-center justify-center">
+                    <ToolIcon name={tool.name} color={tool.color} />
+                  </div>
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">

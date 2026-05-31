@@ -142,7 +142,7 @@ export default function Contact() {
                     name="name"
                     value={form.name}
                     onChange={handleChange}
-                    placeholder="Priya Sharma"
+                    placeholder="Sanyam Goyal"
                     required
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-accent-orange/50 transition-colors"
                   />
@@ -154,7 +154,7 @@ export default function Contact() {
                     name="email"
                     value={form.email}
                     onChange={handleChange}
-                    placeholder="priya@gmail.com"
+                    placeholder="sanyam@gmail.com"
                     required
                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-accent-orange/50 transition-colors"
                   />
@@ -168,7 +168,7 @@ export default function Contact() {
                   name="phone"
                   value={form.phone}
                   onChange={handleChange}
-                  placeholder="+91 98765 43210"
+                  placeholder="+91 83603 41355"
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-accent-orange/50 transition-colors"
                 />
               </div>

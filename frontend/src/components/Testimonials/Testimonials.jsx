@@ -9,6 +9,7 @@ const testimonials = [
     name: 'Priya Sharma',
     role: 'Content Manager → AI Strategist',
     avatar: '👩‍💼',
+    photo: '/Priya Sharma.png',
     color: '#ff6b35',
     rating: 5,
     text: 'I went from spending 8 hours a week on content to 1 hour. The AI automation workflows they taught me are genuinely life-changing. Got promoted within 2 months of completing the course.',
@@ -19,6 +20,7 @@ const testimonials = [
     name: 'Rahul Mehta',
     role: 'Freelancer',
     avatar: '👨‍💻',
+    photo: '/Rahul Mehta.jpg',
     color: '#8b5cf6',
     rating: 5,
     text: "I was skeptical at first but this course is the real deal. I now earn ₹80,000/month from AI-powered freelancing on Fiverr. The Midjourney + copywriting combo is pure gold.",
@@ -29,6 +31,7 @@ const testimonials = [
     name: 'Ananya Krishnan',
     role: 'MBA Student',
     avatar: '👩‍🎓',
+    photo: '/Ananya Krishnan.png',
     color: '#00d9ff',
     rating: 5,
     text: "As a student with zero AI background, I was worried it'd be too technical. But the course starts from absolute basics and builds up perfectly. Got an internship at an AI startup right after!",
@@ -39,6 +42,7 @@ const testimonials = [
     name: 'Vikram Patel',
     role: 'Marketing Director',
     avatar: '👨‍💼',
+    photo: '/Vikram Patel.jpg',
     color: '#ec4899',
     rating: 5,
     text: 'Our entire marketing team went through this course. Our content output tripled while costs dropped 40%. The ROI was immediate. Best investment we made this year.',
@@ -49,6 +53,7 @@ const testimonials = [
     name: 'Neha Gupta',
     role: 'HR Professional',
     avatar: '👩‍🔬',
+    photo: '/Neha Gupta.jpg',
     color: '#f59e0b',
     rating: 5,
     text: 'Completely changed how I handle recruitment. AI-powered JD writing, candidate screening, and email templates save me 15+ hours weekly. The community is incredibly supportive too.',
@@ -59,6 +64,7 @@ const testimonials = [
     name: 'Arjun Reddy',
     role: 'Software Engineer',
     avatar: '👨‍🔧',
+    photo: '/Arjun Reddy.jpg',
     color: '#10b981',
     rating: 5,
     text: "Even as a developer, I learned things I didn't know. The non-coding AI tools opened up a whole new world. I now use AI to document, test, and deploy faster than ever before.",
@@ -106,10 +112,13 @@ function TestimonialCard({ testimonial, isCenter }) {
       {/* Author */}
       <div className="flex items-center gap-3">
         <div
-          className="w-10 h-10 rounded-full flex items-center justify-center text-xl"
+          className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center text-xl shrink-0"
           style={{ background: `${testimonial.color}20`, border: `1px solid ${testimonial.color}30` }}
         >
-          {testimonial.avatar}
+          {testimonial.photo
+            ? <img src={testimonial.photo} alt={testimonial.name} className="w-full h-full object-cover" />
+            : testimonial.avatar
+          }
         </div>
         <div>
           <p className="font-semibold text-white text-sm">{testimonial.name}</p>

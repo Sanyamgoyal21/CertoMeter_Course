@@ -202,8 +202,8 @@ export default function Hero() {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-orange to-accent-pink flex items-center justify-center">
-                      <Zap size={18} className="text-white" />
+                    <div className="w-10 h-10 rounded-xl overflow-hidden">
+                      <img src="/Logo.png" alt="logo" className="w-full h-full object-cover" style={{ transform: 'scale(1.45)', transformOrigin: 'center' }} />
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-white">AI Career Dashboard</p>
@@ -264,7 +264,9 @@ export default function Hero() {
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
                 className="absolute -left-16 top-1/4 glass rounded-2xl p-3 flex items-center gap-3 w-44 border border-white/10"
               >
-                <div className="w-8 h-8 rounded-xl bg-accent-cyan/20 flex items-center justify-center text-lg">🤖</div>
+                <div className="w-8 h-8 rounded-xl overflow-hidden flex-shrink-0">
+                  <img src="/chatgpt.png" alt="ChatGPT" className="w-full h-full object-cover" />
+                </div>
                 <div>
                   <p className="text-xs font-semibold text-white">ChatGPT</p>
                   <p className="text-xs text-gray-500">Advanced Prompts</p>
@@ -276,7 +278,9 @@ export default function Hero() {
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
                 className="absolute -right-8 bottom-1/4 glass rounded-2xl p-3 flex items-center gap-3 w-44 border border-white/10"
               >
-                <div className="w-8 h-8 rounded-xl bg-accent-purple/20 flex items-center justify-center text-lg">🎯</div>
+                <div className="w-8 h-8 rounded-xl overflow-hidden flex-shrink-0">
+                  <img src="/certificate.png" alt="Certificate" className="w-full h-full object-cover" />
+                </div>
                 <div>
                   <p className="text-xs font-semibold text-white">Certificate</p>
                   <p className="text-xs text-green-400">Earned! ✓</p>
@@ -288,7 +292,6 @@ export default function Hero() {
                 transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
                 className="absolute -top-8 right-1/4 glass rounded-2xl p-3 flex items-center gap-3 border border-white/10"
               >
-                <span className="text-xl">🚀</span>
                 <div>
                   <p className="text-xs font-semibold text-white">2x Productivity</p>
                   <p className="text-xs text-accent-orange">This week</p>

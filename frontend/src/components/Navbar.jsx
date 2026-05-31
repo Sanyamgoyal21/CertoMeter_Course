@@ -43,15 +43,15 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
             <motion.div
-              className="flex items-center gap-2 cursor-pointer"
+              className="flex items-center gap-2.5 cursor-pointer"
               whileHover={{ scale: 1.02 }}
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-orange to-accent-pink flex items-center justify-center">
-                <Zap size={16} className="text-white" fill="white" />
+              <div className="w-9 h-9 rounded-full overflow-hidden shrink-0">
+                <img src="/Logo.png" alt="AI Career Accelerator" className="w-full h-full object-cover" style={{ transform: 'scale(1.45)', transformOrigin: 'center' }} />
               </div>
-              <span className="font-display font-bold text-lg text-white">
-                AI<span className="text-accent-orange">Career</span>
+              <span className="font-display font-bold text-base text-white hidden sm:block">
+                AI Career Accelerator
               </span>
             </motion.div>
 

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Zap, Twitter, Instagram, Linkedin, Youtube, Send } from 'lucide-react';
+import { Twitter, Instagram, Linkedin, Youtube, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { subscribeNewsletter } from '../../utils/api';
 
@@ -73,12 +73,12 @@ export default function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 mb-12">
           {/* Brand */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-accent-orange to-accent-pink flex items-center justify-center">
-                <Zap size={16} className="text-white" fill="white" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
+                <img src="/Logo.png" alt="AI Career Accelerator" className="w-full h-full object-cover" style={{ transform: 'scale(1.45)', transformOrigin: 'center' }} />
               </div>
-              <span className="font-display font-bold text-xl text-white">
-                AI<span className="text-accent-orange">Career</span>
+              <span className="font-display font-bold text-lg text-white">
+                AI Career Accelerator
               </span>
             </div>
 
@@ -169,7 +169,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-gray-700">
-            © 2025 AI Career Accelerator. All rights reserved. Made with ❤️ for curious minds.
+            © 2026 AI Career Accelerator. All rights reserved. Made with ❤️ for curious minds.
           </p>
           <div className="flex items-center gap-4 text-xs text-gray-700">
             <Link to="/privacy-policy" className="hover:text-gray-400 transition-colors">Privacy</Link>

@@ -93,7 +93,7 @@ function PaymentModal({ onClose, onSubmit, loading }) {
               type="text"
               value={form.name}
               onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
-              placeholder="Priya Sharma"
+              placeholder="Sanyam Goyal"
               required
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-accent-orange/50 transition-colors"
             />
@@ -104,7 +104,7 @@ function PaymentModal({ onClose, onSubmit, loading }) {
               type="email"
               value={form.email}
               onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))}
-              placeholder="priya@gmail.com"
+              placeholder="sanyam@gmail.com"
               required
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-accent-orange/50 transition-colors"
             />
@@ -115,7 +115,7 @@ function PaymentModal({ onClose, onSubmit, loading }) {
               type="tel"
               value={form.phone}
               onChange={(e) => setForm(f => ({ ...f, phone: e.target.value }))}
-              placeholder="+91 98765 43210"
+              placeholder="+91 83603 41355"
               className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 text-sm focus:outline-none focus:border-accent-orange/50 transition-colors"
             />
           </div>
@@ -221,7 +221,9 @@ export default function Pricing() {
             {/* Header band */}
             <div className="bg-gradient-to-r from-accent-orange to-accent-pink px-8 py-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Zap size={16} className="text-white" fill="white" />
+                <div className="w-6 h-6 rounded-full overflow-hidden shrink-0">
+                  <img src="/Logo.png" alt="logo" className="w-full h-full object-cover" style={{ transform: 'scale(1.45)', transformOrigin: 'center' }} />
+                </div>
                 <span className="font-display font-bold text-white">AI Career Accelerator</span>
               </div>
               <span className="text-xs bg-white/20 text-white px-3 py-1 rounded-full font-semibold">MOST POPULAR</span>
