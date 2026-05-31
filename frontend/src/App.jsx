@@ -1,5 +1,6 @@
-import { useEffect, Suspense, lazy } from 'react';
+import { useEffect, Suspense, lazy, useState } from 'react';
 import { BrowserRouter, Routes, Route, ScrollRestoration } from 'react-router-dom';
+import SplashScreen from './components/SplashScreen/SplashScreen';
 import { v4 as uuidv4 } from 'uuid';
 import { SocketProvider } from './context/SocketContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -47,12 +48,15 @@ function getOrCreateSessionId() {
 }
 
 function LandingPage() {
+  const [splashDone, setSplashDone] = useState(false);
+
   useEffect(() => {
     trackVisitor(getOrCreateSessionId()).catch(() => {});
   }, []);
 
   return (
     <div className="min-h-screen bg-dark-900 text-white overflow-x-hidden font-body">
+      {!splashDone && <SplashScreen onComplete={() => setSplashDone(true)} />}
       <div className="noise-overlay" />
       <CursorEffect />
       <Navbar />

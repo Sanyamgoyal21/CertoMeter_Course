@@ -7,7 +7,6 @@ const morgan = require('morgan');
 const { Server } = require('socket.io');
 
 const { connectDB } = require('./src/config/database');
-const { getRedisClient } = require('./src/config/redis');
 const { initSocketManager } = require('./src/socket/socketManager');
 const { setIO } = require('./src/utils/ioInstance');
 const analyticsRoutes = require('./src/routes/analytics');
@@ -79,7 +78,6 @@ const PORT = process.env.PORT || 5000;
 async function startServer() {
   try {
     await connectDB();
-    await getRedisClient();
     setIO(io);
     initSocketManager(io);
     server.listen(PORT, () => {
