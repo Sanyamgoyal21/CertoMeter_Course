@@ -50,7 +50,7 @@ export function SocketProvider({ children }) {
     socket.on('disconnect', () => setIsConnected(false));
 
     socket.on('stats:update', (data) => {
-      if (data.activeUsers > 0) setActiveUsers(data.activeUsers);
+      if (typeof data.activeUsers === 'number') setActiveUsers(Math.max(1, data.activeUsers));
       if (data.totalVisitors > 0) setTotalVisitors(data.totalVisitors);
       if (data.paidMembers >= 0) setPaidMembers(data.paidMembers);
     });

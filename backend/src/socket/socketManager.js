@@ -8,20 +8,22 @@ function initSocketManager(io) {
   const connectedSockets = new Map();
 
   async function broadcast() {
+    // Capture immediately — no async needed for this
+    const activeUsers = connectedSockets.size;
+
+    let totalVisitors = 0;
+    let paidMembers = 0;
     try {
-      const [totalVisitors, paidMembers] = await Promise.all([
+      [totalVisitors, paidMembers] = await Promise.all([
         getTotalVisitorsFromDB(),
         getPaidMembersCount(),
       ]);
-      io.emit('stats:update', {
-        activeUsers: connectedSockets.size,
-        totalVisitors,
-        paidMembers,
-        timestamp: Date.now(),
-      });
     } catch (err) {
-      console.error('Broadcast error:', err.message);
+      console.error('Broadcast DB error:', err.message);
     }
+
+    // Always emit — even if DB queries failed, activeUsers is always accurate
+    io.emit('stats:update', { activeUsers, totalVisitors, paidMembers, timestamp: Date.now() });
   }
 
   io.on('connection', async (socket) => {
