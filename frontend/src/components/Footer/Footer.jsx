@@ -38,10 +38,10 @@ const links = {
 };
 
 const socials = [
-  { icon: Twitter, label: 'Twitter', href: '#' },
-  { icon: Instagram, label: 'Instagram', href: '#' },
-  { icon: Linkedin, label: 'LinkedIn', href: '#' },
-  { icon: Youtube, label: 'YouTube', href: '#' },
+  { icon: Twitter, label: 'Twitter', href: 'https://x.com/sanyamgoyal21' },
+  { icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/sanyam3651?igsh=MXhjdGR5eGp4YnVjaw==' },
+  { icon: Linkedin, label: 'LinkedIn', href: 'https://www.linkedin.com/in/sanyam-goyal-9a0b2a244?utm_source=share_via&utm_content=profile&utm_medium=member_android' },
+  { icon: Youtube, label: 'YouTube', href: 'https://youtu.be/kxFGS0s2AyA?si=LVtzyM-vmqmWN2Tz' },
 ];
 
 export default function Footer() {
@@ -119,6 +119,8 @@ export default function Footer() {
                   key={label}
                   href={href}
                   aria-label={label}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-9 h-9 glass rounded-xl border border-white/10 flex items-center justify-center hover:border-white/30 hover:text-white text-gray-500 transition-all"
                 >
                   <Icon size={16} />
