@@ -66,7 +66,6 @@ CertoMeter/
 ### Prerequisites
 - Node.js 18+
 - MongoDB (optional — falls back to in-memory)
-- Redis (optional — falls back to in-memory)
 
 ### 1. Backend
 
@@ -95,8 +94,6 @@ npm run dev            # runs on http://localhost:5173
 PORT=5000
 NODE_ENV=development
 MONGODB_URI=mongodb://localhost:27017/ai-career-accelerator
-REDIS_HOST=localhost
-REDIS_PORT=6379
 FRONTEND_URL=http://localhost:5173
 PUBLIC_SITE_URL=http://localhost:5173
 BREVO_API_KEY=your_brevo_api_key
@@ -149,7 +146,6 @@ VITE_RAZORPAY_KEY_ID=your_razorpay_key_id
 
 ### Backend
 - **Socket.io** — real-time active user broadcast
-- **Redis** — scalable active user tracking (in-memory fallback)
 - **MongoDB** — lead & visitor storage (in-memory fallback)
 - **Razorpay** — order creation & payment verification endpoints
 - **Gemini AI** — `/api/chat` proxy endpoint for mascot chatbot
@@ -230,7 +226,6 @@ NODE_ENV=production node server.js
 | Frontend hosting | Vercel |
 | Backend hosting | Railway or Render |
 | Database | MongoDB Atlas |
-| Cache | Upstash Redis |
 | Payments | Razorpay |
 | AI | Google AI Studio (Gemini) |
 
